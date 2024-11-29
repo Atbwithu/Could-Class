@@ -7,7 +7,6 @@ import com.gbl.service.IChapterService;
 import com.gbl.service.IStudyService;
 import com.gbl.service.ICourseService;
 import com.gbl.utils.UploadCoverUrl;
-import com.gbl.utils.UploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,14 +68,6 @@ public class CourseController {
         return i;
     }
 
-    //上传图片
-    @RequestMapping("/upload")
-    public String upload(MultipartFile file) throws IOException {
-        String uploadedImageUrl = UploadUtil.uploadImage(file);
-        // 打印或返上传后的图片URL
-        System.out.println("Uploaded Image URL: " + uploadedImageUrl);
-        return  uploadedImageUrl;
-    }
 
     @RequestMapping("/delete")
     public int delete(int id){
