@@ -1,5 +1,6 @@
 package com.gbl.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gbl.entity.Kinds;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,11 +12,6 @@ import java.util.List;
  * @Date: 2024/5/1 15:19
  * @Version: 1.0
  */@Mapper
-public interface KindsMapper {
-//    增 删 改 查
-    int insert(Kinds kinds);
-    int delete(int id);
-    Kinds selectById(int id);
-    int update(Kinds kinds);
-    List<Kinds> select(Kinds kinds);
+public interface KindsMapper extends BaseMapper<Kinds> {
+
 }

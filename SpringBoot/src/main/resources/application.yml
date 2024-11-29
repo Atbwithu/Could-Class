@@ -24,12 +24,6 @@ spring:
       database: 0
       timeout: 5000
 
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.gbl.mybatis.entity
-  configuration:
-    map-underscore-to-camel-case: true
-
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -42,11 +36,6 @@ mybatis-plus:
       logic-not-delete-value: 0
   mapper-locations: classpath*:mapper/**/*.xml
 
-pagehelper:
-  helperDialect: mysql
-  reasonable: true
-  supportMethodsArguments: true
-  params: count=countSql
 
 # 日志配置
 logging:
@@ -56,6 +45,3 @@ logging:
   file:
     name: /your_path/springboot.log
 
-video:
-  upload:
-    path: KuYunClass

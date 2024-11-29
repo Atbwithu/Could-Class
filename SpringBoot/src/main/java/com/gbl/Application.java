@@ -39,11 +39,6 @@ public class Application {
         factory.setMaxRequestSize(DataSize.parse("5000MB"));
         return factory.createMultipartConfig();
     }
-    @Bean
-    public PageHelper pageHelper(){
-        PageHelper pageHelper = new PageHelper();
-        return pageHelper;
-    }
 
 
 }

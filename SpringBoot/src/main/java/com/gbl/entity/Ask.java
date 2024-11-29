@@ -22,4 +22,5 @@ public class Ask {
     private String answer;      //提问的回复
     private int pageNum; //开始页面
     private int pageSize; //展示几条
+    private int uid;
 }
