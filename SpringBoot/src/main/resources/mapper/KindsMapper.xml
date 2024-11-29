@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gbl.mapper.KindsMapper">
+    <!--增删改查sql语句-->
+    <!--  新增  -->
+    <insert id="insert">
+        insert into kinds
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            null,
+            <if test="typeName!=null and typeName!=''">
+                #{typeName},
+            </if>
+            <if test="parent!=null and parent!=''">
+                #{parent},
+            </if>
+            <if test="order!=null and order!=''">
+                #{order},
+            </if>
+        </trim>
+    </insert>
+    <!--  修改  -->
+    <update id="update">
+        update kinds
+        <trim prefix="set" suffixOverrides=",">
+            <if test="typeName!=null and typeName!=''">
+                type_name=#{typeName},
+            </if>
+            <if test="parent!=null and parent!=''">
+                parent=#{parent},
+            </if>
+            <if test="order!=null and order!=''">
+                `order`=#{order},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+    <!--  删除  -->
+    <delete id="delete">
+        delete from kinds where id=#{id}
+    </delete>
+    <!--  查询  -->
+    <select id="select" resultType="com.gbl.entity.Kinds">
+        select * from kinds
+        <where>
+            <if test="typeName!=null and typeName!=''">
+                type_name like '%${typeName}%'
+            </if>
+        </where>
+    </select>
+    <!--  根据id查询  -->
+    <select id="selectById" resultType="com.gbl.entity.Kinds">
+        select * from kinds where id=#{id}
+    </select>
+</mapper>

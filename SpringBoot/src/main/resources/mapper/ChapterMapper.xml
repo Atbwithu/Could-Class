@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gbl.mapper.ChapterMapper">
+    <insert id="insertC">
+        INSERT INTO chapter (`name`, `subject_id`, `issue_num`, `study_num`, `video`, `length_time`)
+        VALUES (#{name} #{subject_id}, #{issue_num},#{study_num}, #{video}, #{length_time});
+    </insert>
+
+    <select id="findAll" resultType="com.gbl.entity.Chapter">
+        SELECT ch.id, ch.`name`, c.`course_name` ,cs.ask_num,cs.learn_num ,ch.create_time  from course c
+        INNER JOIN course_chapter_relationship ccr on c.id = ccr.course_id
+        INNER JOIN chapter ch on ch.id = ccr.chapter_id
+        INNER JOIN chapter_studycourse_relationship cscr ON cscr.cid = ch.id
+        INNER JOIN chapter_study cs ON cs.id = cscr.sid
+        where c.id = #{id}
+    </select>
+    <select id="selectById" resultType="com.gbl.entity.Chapter">
+        select * from chapter where id= #{id}
+    </select>
+
+    <select id="selectNameId"  resultType="com.gbl.entity.Course">
+        select id,subject_name from subject
+    </select>
+<!--    删除课程下所有章节-->
+    <delete id="deleteById" parameterType="java.util.List">
+        delete from chapter where id in 
+        <foreach collection="list" item="ids" open="(" separator="," close=")">
+            #{ids.chapterId}
+        </foreach>
+    </delete>
+    <!--删除章节下所有的视频-->
+    <delete id="deleteVideoById" parameterType="java.util.List">
+        delete from chapter where id in
+        <foreach collection="list" item="ids" open="(" separator="," close=")">
+            #{ids.videoId}
+        </foreach>
+    </delete>
+    <!--删除章节关联的视频列表-->
+    <delete id="removeChapterVideo" parameterType="java.lang.Integer">
+        delete from chapter_video_relationship where cid  = #{id}
+    </delete>
+    <!--批量单个章节-->
+    <delete id="deleteChapterById" parameterType="java.lang.Integer">
+        delete from chapter where id = #{id}
+    </delete>
+    <!--删除视频-->
+    <delete id="deleteVideo">
+        delete from video where id = #{id}
+    </delete>
+    <!--删除多个视频-->
+    <delete id="deleteVideos" parameterType="java.lang.Integer">
+        delete from viedo where id in
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    <!--删除多个章节-->
+    <delete id="deleteChapterByIds" parameterType="java.lang.Integer">
+        delete from chapter where id in
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    <!--删除单个关联视频的关联-->
+    <delete id="delVideoRelationship">
+        delete from chapter_video_relationship where vid = #{id}
+    </delete>
+    <!--删除视频关联-->
+    <delete id="delRelationshipByIds" parameterType="java.lang.Integer">
+        delete from course_chapter_relationship where vid in
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    <select id="getChapterIds" resultType="com.gbl.entity.SomeId">
+        select vid from chapter_video_relationship where cid = #{id}
+    </select>
+<!--    查询课程列表-->
+    <select id="chapterName" resultType="com.gbl.entity.Chapter">
+        select ch.id,ch.`name` from course c
+        INNER JOIN course_chapter_relationship ccr ON ccr.course_id = c.id
+        INNER JOIN chapter ch on ccr.chapter_id = ch.id
+        where c.id = #{id}
+    </select>
+<!--    查询视频信息-->
+    <select id="findVideo" resultType="com.gbl.entity.Video">
+        select v.id,v.video_name,v.save_path from chapter c
+        INNER JOIN chapter_video_relationship cvr on c.id = cvr.cid
+        INNER JOIN video v on v.id = cvr.vid
+        where c.id =#{id}
+    </select>
+<!--    具体查询一条视频信息-->
+    <select id="onlyVideo" resultType="com.gbl.entity.Video">
+        select v.id,ch.name,c.`course_name`,v.video_name,v.save_path from course c
+        INNER JOIN course_chapter_relationship ccr ON ccr.course_id = c.id
+        INNER JOIN chapter ch on ccr.chapter_id = ch.id
+        INNER JOIN chapter_video_relationship cvr on cvr.cid = ch.id
+        INNER JOIN video v ON v.id = cvr.vid
+        where v.id = #{vid} and ch.id =#{cid};
+    </select>
+    <select id="getVideoIdById" resultType="com.gbl.entity.SomeId">
+
+    </select>
+
+    <select id="findAllVideo" resultType="com.gbl.entity.Video">
+        select * from video v
+        inner join chapter_video_relationship cvr on cvr.vid =v.id
+        inner join chapter c on c.id = cvr.cid
+        where c.id = #{id}
+    </select>
+
+    <select id="findVideoId" resultType="com.gbl.entity.SomeId">
+        select vid as videoId from chapter_video_relationship where cid = #{cid}
+    </select>
+
+    <select id="selectVideo" resultType="com.gbl.entity.Video">
+        select v.id,v.video_name,v.save_path,v.original_name from video v
+        INNER JOIN chapter_video_relationship cvr on v.id = cvr.vid
+        INNER JOIN chapter c on c.id = cvr.cid
+        where v.id = #{id}
+    </select>
+
+    <!--    新增视频-->
+    <insert id="uploadVideo" keyProperty="id" useGeneratedKeys="true" parameterType="com.gbl.entity.Video">
+        INSERT INTO `video` (`video_name`, `save_path`, `original_name`) VALUES ( #{videoName},#{savePath},#{originalName});
+    </insert>
+
+    <insert id="videoAndChapter" >
+        INSERT INTO `chapter_video_relationship` (`vid`, `cid`) VALUES (#{vid}, #{cid});
+    </insert>
+
+<!--    新增章节-->
+        <insert id="addChapter" keyProperty="id" useGeneratedKeys="true" parameterType="com.gbl.entity.Video">
+        INSERT INTO `chapter` ( `name`, `create_time`) VALUES (#{name} , #{createTime});
+    </insert>
+
+    <insert id="chapterCourse">
+        INSERT INTO `course_chapter_relationship` (`course_id`, `chapter_id`) VALUES (#{courseId}, #{chapterId});
+    </insert>
+</mapper>

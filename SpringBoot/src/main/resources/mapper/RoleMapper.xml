@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 文档声明，是mybatis的核心配置文件 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gbl.mapper.RoleMapper">
+<!--    新增-->
+    <insert id="insert">
+        INSERT INTO role (`role_id`, `role_name`) VALUES (#{roleId},#{roleName});
+    </insert>
+<!--    根据id修改-->
+    <update id="update">
+        UPDATE role SET `role_name` = #{roleName} WHERE `role_id` = #{roleId};
+    </update>
+    <!--    删除-->
+    <delete id="delete">
+         delete from role where role_id = #{roleId}
+    </delete>
+
+    <!--查全部-->
+    <select id="findAll" resultType="com.gbl.entity.Role">
+        select * from role
+    </select>
+<!--    根据id查询-->
+    <select id="findById" resultType="com.gbl.entity.Role">
+        select * from role where role_id = #{roleId}
+    </select>
+
+</mapper>

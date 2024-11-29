@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gbl.mapper.UserMapper">
+    <!--增删改查sql语句-->
+    <!--  新增  -->
+    <insert id="insert">
+        INSERT INTO `user` (`account`, `user_name`, `sex`, `email`, `phone`, `remake`, `password`, `create_time`, `status`, `image_url`)
+        VALUES (#{userName},#{account}, #{sex},  #{email},  #{phone},  #{remake},  #{password}, #{createTime}, #{status}, #{imageUrl});
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        <trim>
+            <if test="userName == null and userName ==''">
+                and user_name = #{userName},
+            </if>
+            <if test="account == null and account ==''">
+                and account = #{account},
+            </if>
+            <if test="sex == null and sex ==''">
+                and sex = #{sex},
+            </if><if test="email == null and email ==''">
+            and email = #{email},
+        </if>
+            <if test="phone == null and phone ==''">
+                and phone = #{phone},
+            </if>
+            <if test="remake == null and remake ==''">
+                and remake = #{remake},
+            </if>
+            <if test="password == null and password ==''">
+                and password = #{password},
+            </if>
+            <if test="createTime == null and createTime ==''">
+                and create_time = #{createTime},
+            </if>
+            <if test="status == null and status ==''">
+                and status = #{status},
+            </if>
+            <if test="imageUrl == null and imageUrl ==''">
+                and image_url = #{imageUrl},
+            </if>
+        </trim>
+    </insert>
+    <insert id="register" keyProperty="id" useGeneratedKeys="true" parameterType="com.gbl.entity.User">
+        INSERT INTO `user` (`user_name`, `account`, `password`, `sex`, `phone`, `email`, `create_time`) VALUES (#{account},#{account} ,#{password} ,#{sex} ,#{phone} ,#{email} , #{dateTime});
+    </insert>
+    <insert id="insertUserRole">
+            INSERT INTO `user_role_id` (`uid`, `role_id`) VALUES (#{id}, #{roleId});
+    </insert>
+    <insert id="insert2">
+        INSERT INTO `user` (`account`, `user_name`, `sex`, `email`, `phone`, `remake`, `password`, `create_time`, `status`, `image_url`)
+        VALUES (#{userName},#{account}, #{sex},  #{email},  #{phone},  #{remake},  #{password}, #{createTime}, #{status}, #{imageUrl});
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        <trim>
+            <if test="userName == null and userName ==''">
+                and user_name = #{userName},
+            </if>
+            <if test="account == null and account ==''">
+                and account = #{account},
+            </if>
+            <if test="sex == null and sex ==''">
+                and sex = #{sex},
+            </if><if test="email == null and email ==''">
+            and email = #{email},
+        </if>
+            <if test="phone == null and phone ==''">
+                and phone = #{phone},
+            </if>
+            <if test="remake == null and remake ==''">
+                and remake = #{remake},
+            </if>
+            <if test="password == null and password ==''">
+                and password = #{password},
+            </if>
+            <if test="createTime == null and createTime ==''">
+                and create_time = #{createTime},
+            </if>
+            <if test="status == null and status ==''">
+                and status = #{status},
+            </if>
+            <if test="imageUrl == null and imageUrl ==''">
+                and image_url = #{imageUrl},
+            </if>
+        </trim>
+    </insert>
+    <!--  修改  -->
+    <update id="update">
+        update user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="remake != null and remake != ''">
+                remake = #{remake},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+    <update id="updateStatus">
+        UPDATE user
+        SET status = #{status}
+        WHERE id = #{id};
+    </update>
+    <!--  删除  -->
+    <delete id="delete">
+        delete from user where id=#{id}
+    </delete>
+    <!--  查询  -->
+    <select id="select" resultType="com.gbl.entity.User">
+        select u.*,r.role_id,r.role_name from user u
+        INNER JOIN user_role_id uri on uri.uid = u.id
+        INNER JOIN role r on r.role_id = uri.role_id
+    </select>
+    <!--  根据id查询  -->
+    <select id="selectById" resultType="com.gbl.entity.User">
+        select * from user where id = #{id}
+    </select>
+    <select id="login" resultType="com.gbl.entity.User">
+        SELECT user.*,user_role_id.role_id,role.role_name FROM user_role_id
+        INNER JOIN user ON user.id = user_role_id.uid
+        INNER JOIN role ON role.role_id = user_role_id.role_id
+        WHERE account = #{account} AND `password` = #{password}
+    </select>
+    <select id="countStu" resultType="java.lang.Integer">
+        select count(*) from user;
+    </select>
+    <select id="countQuestion" resultType="java.lang.Integer">
+        select sum(s.question_num) from study s limit 10;
+    </select>
+    <select id="countCourse" resultType="java.lang.Integer">
+        select count(*) from course limit 10;
+    </select>
+<!--    查询关联用户的学习表的id字段-->
+    <select id="getId" resultType="java.lang.Integer">
+        SELECT u.studyId FROM totalstudy u where  userId=#{id}
+    </select>
+    <select id="selByName" resultType="com.gbl.entity.User">
+        select * from user where account = #{account}
+    </select>
+    <select id="selByName2" resultType="com.gbl.entity.User">
+        select * from user where account = #{account}
+    </select>
+    <select id="nickName" resultType="com.gbl.entity.User">
+        select * from user where user_name like '%${userName}%'
+    </select>
+    <delete id="delStudy">
+        delete from totalStudy where userId = #{id}
+    </delete>
+</mapper>

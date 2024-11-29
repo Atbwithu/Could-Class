@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gbl.mapper.AskMapper">
+<!--增删改查sql语句-->
+    <!--  新增  -->
+    <insert id="insert">
+        insert into ask
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            null,
+            <if test="userName!=null and userName!=''">
+                #{userName},
+            </if>
+            <if test="course!=null and course!=''">
+                #{course},
+            </if>
+            <if test="chapter!=null and chapter!=''">
+                #{chapter},
+            </if>
+            <if test="questions!=null and questions!=''">
+                #{questions},
+            </if>
+        </trim>
+    </insert>
+    <!--  修改  -->
+    <update id="update">
+        update ask
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userName!=null and userName!=''">
+                user_name=#{userName},
+            </if>
+            <if test="status!=null and status!=''">
+                status=#{status},
+            </if>
+            <if test="questions!=null and questions!=''">
+                questions=#{questions},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+    <!--  删除  -->
+    <delete id="delete">
+        delete from ask where id=#{id}
+    </delete>
+    <!--批量删除-->
+    <delete id="deleteByIds" parameterType="Long">
+        delete from ask where id in
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    <delete id="delRelationByIds" parameterType="Long">
+        delete from user_ask_relationship where qid in
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    <!--  查询  -->
+    <select id="select" resultType="com.gbl.entity.Ask">
+        select u.user_name,c.course_name ,a.id,a.questions,a.create_time,a.`status` ,c.course_name
+        from ask a
+        INNER JOIN user_ask_relationship uar ON uar.qid = a.id
+        INNER JOIN `user` u ON u.id = uar.uid
+        INNER JOIN ask_course_relationship acr ON acr.qid = a.id
+        INNER JOIN `course` c ON c.id = acr.cid
+        <where>
+            <if test="userName!=null and userName!=''">
+                u.user_name like '%${userName}%'
+            </if>
+            <if test="courseName!=null and courseName!=''">
+                c.course_name like '%${courseName}%'
+            </if>
+        </where>
+
+    </select>
+    <!--  根据id查询  -->
+    <select id="selectById" resultType="com.gbl.entity.Ask">
+        select * from ask where id=#{id}
+    </select>
+<!--提问-->
+    <insert id="ask" keyProperty="id" useGeneratedKeys="true" parameterType="com.gbl.entity.Ask">
+        INSERT INTO `ask` ( `questions`, `create_time`) VALUES (#{questions},#{createTime});
+    </insert>
+    <update id="answer">
+        update ask
+        <trim prefix="set" suffixOverrides=",">
+            <if test="answer!=null and answer!=''">
+                answer=#{answer},
+            </if>
+            <if test="answer!=null and answer!=''">
+                status= 1,
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+    <select id="askList" resultType="com.gbl.entity.Ask">
+        select a.questions,a.answer from ask a
+        INNER JOIN ask_chapter_relationship acr on a.id = acr.qid
+        INNER JOIN chapter c ON c.id = acr.cid
+        where c.id = #{id}
+    </select>
+<!--    主页提问最新列表-->
+    <select id="questionList" resultType="com.gbl.entity.Ask">
+        select a.questions,a.create_time from ask a ORDER BY a.id desc;
+    </select>
+<!--    查询用户所提出的问题列表-->
+    <select id="userQuestionList" resultType="com.gbl.entity.Ask">
+        select a.questions,a.create_time,a.`status` ,c.course_name
+        from ask a
+                 INNER JOIN user_ask_relationship uar ON uar.qid = a.id
+                 INNER JOIN `user` u ON u.id = uar.uid
+                 INNER JOIN ask_course_relationship acr ON acr.qid = a.id
+                 INNER JOIN course c ON c.id = acr.cid
+        where u.id = #{id}
+    </select>
+    <select id="queryPage" resultType="com.gbl.entity.Ask">
+        select u.user_name,c.course_name ,a.id,a.questions,a.create_time,a.`status` ,c.course_name
+        from ask a
+        INNER JOIN user_ask_relationship uar ON uar.qid = a.id
+        INNER JOIN `user` u ON u.id = uar.uid
+        INNER JOIN ask_course_relationship acr ON acr.qid = a.id
+        INNER JOIN `course` c ON c.id = acr.cid
+        <where>
+            <if test="userName!=null and userName!=''">
+                u.user_name like '%${userName}%'
+            </if>
+            <if test="courseName!=null and courseName!=''">
+                c.course_name like '%${courseName}%'
+            </if>
+        </where>
+    </select>
+    <select id="findAskByChapter" resultType="java.lang.Integer">
+        select count(*) from ask a
+                                 INNER JOIN ask_chapter_relationship acr on acr.qid = a.id
+                                 INNER JOIN chapter c on c.id = acr.cid
+        where c.id = #{id}
+    </select>
+
+    <!--    新增问题关联课程的表-->
+    <insert id="askAndCourse">
+        INSERT INTO `ask_course_relationship` (`cid`, `qid`) VALUES (#{cid}, #{qid});
+    </insert>
+<!--    新增问题关联的用户表-->
+
+    <insert id="askAndUser">
+        INSERT INTO `user_ask_relationship` (`qid`, `uid`) VALUES (#{qid}, #{uid});
+    </insert>
+    <insert id="askAndChapter">
+        INSERT INTO `ask_chapter_relationship` (`qid`, `cid`) VALUES (#{qid}, #{chapterId});
+    </insert>
+
+    <update id="updateChapterStudy">
+        update chapter_study
+        <trim prefix="set" suffixOverrides=",">
+            <if test="askNum!=null and askNum !=''">
+                ask_num = #{askNum},
+            </if>
+            <if test="learnNum!=null and learnNum !=''">
+                learn_num = #{learnNum}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+</mapper>

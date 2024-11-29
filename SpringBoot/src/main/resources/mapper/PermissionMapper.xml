@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 文档声明，是mybatis的核心配置文件 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gbl.mapper.PermissionMapper">
+
+
+    <select id="selAll" resultType="com.gbl.entity.Permission">
+            SELECT
+            role.*,
+            permission.*
+            FROM
+            role_permission
+            INNER JOIN
+            role ON role_permission.role_id = role.role_id
+            INNER JOIN
+            permission ON role_permission.permission_id = permission.permission_id
+            <where>
+                <if test="roleId != null">
+                    AND role.role_id = #{roleId}
+                </if>
+            </where>
+    </select>
+</mapper>
