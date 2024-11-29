@@ -7,7 +7,6 @@ import com.gbl.service.IChapterService;
 import com.gbl.service.IStudyService;
 import com.gbl.service.ICourseService;
 import com.gbl.utils.UploadCoverUrl;
-import com.gbl.utils.UploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

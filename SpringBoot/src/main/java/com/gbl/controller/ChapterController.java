@@ -3,18 +3,12 @@ package com.gbl.controller;
 import com.gbl.entity.Chapter;
 import com.gbl.entity.Video;
 import com.gbl.service.IChapterService;
-import com.gbl.utils.UploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.UUID;
 
 @CrossOrigin
 @RestController
